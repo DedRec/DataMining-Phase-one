@@ -2,10 +2,8 @@ from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LinearRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, auc, precision_recall_curve
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve, auc, precision_recall_curve, \
+    mean_absolute_error, mean_squared_error
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import plot_tree, DecisionTreeClassifier
@@ -367,7 +365,7 @@ def LinearReg(X_train, X_test, y_train, y_test):
 
     # Generate a feature importance plot (for models with coefficients available)
     if hasattr(regr, 'coef_'):
-        coefs = np.abs(regr.coef_.ravel())
+        coefs = regr.coef_.ravel()
         names = range(1, len(coefs) + 1)
         fig, ax = plt.subplots(figsize=(7, 5))
         ax.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
@@ -424,7 +422,7 @@ def support_vector_machines(X_train, X_test, y_train, y_test):
 
     # Generate a feature importance plot (for models with coefficients available)
     if hasattr(model, 'coef_'):
-        coefs = np.abs(model.coef_.ravel())
+        coefs = model.coef_.ravel()
         names = range(1, len(coefs) + 1)
         fig3, ax3 = plt.subplots(figsize=(7, 5))
         ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
@@ -561,7 +559,7 @@ def logistic_regression(X_train, X_test, y_train, y_test):
 
     # Generate a feature importance plot (for models with coefficients available)
     if hasattr(model, 'coef_'):
-        coefs = np.abs(model.coef_.ravel())
+        coefs = model.coef_.ravel()
         names = range(1, len(coefs) + 1)
         fig3, ax3 = plt.subplots(figsize=(7, 5))
         ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
