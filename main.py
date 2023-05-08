@@ -19,14 +19,17 @@ X_train2, X_test2, y_train2, y_test2 =train_test_split(features, target, test_si
 
 
 
-logistic_regression(X_train, X_test, y_train, y_test)
-logistic_regression(X_train2, X_test2, y_train2, y_test2)
+#logistic_regression(X_train, X_test, y_train, y_test)
+#logistic_regression(X_train2, X_test2, y_train2, y_test2)
 
-decision_tree(X_train, X_test, y_train, y_test)
-decision_tree(X_train2, X_test2, y_train2, y_test2)
+# decision_tree(X_train, X_test, y_train, y_test)
+# decision_tree(X_train2, X_test2, y_train2, y_test2)
 
-naive_bayes(X_train, X_test, y_train, y_test)
-naive_bayes(X_train2, X_test2, y_train2, y_test2)
+#naive_bayes(X_train, X_test, y_train, y_test)
+#naive_bayes(X_train2, X_test2, y_train2, y_test2)
 
-support_vector_machines(X_train, X_test, y_train, y_test)
-support_vector_machines(X_train2, X_test2, y_train2, y_test2)
+#support_vector_machines(X_train, X_test, y_train, y_test)
+#support_vector_machines(X_train2, X_test2, y_train2, y_test2)
+
+# KNN(X_train, X_test, y_train, y_test)
+# KNN(X_train2, X_test2, y_train2, y_test2)

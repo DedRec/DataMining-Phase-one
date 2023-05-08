@@ -10,6 +10,8 @@ from sklearn.tree import plot_tree, DecisionTreeClassifier
 from sklearn import svm
 from Project import *
 import numpy as np
+from sklearn.calibration import CalibratedClassifierCV, calibration_curve
+from sklearn.metrics import brier_score_loss
 
 show_graphs = False
 
@@ -266,6 +268,17 @@ def KNN(X_train, X_test, y_train, y_test):
     KNN.fit(X_train, y_train)
     test_score = KNN.score(X_test, y_test)
 
+    y_pred = KNN.predict(X_test)
+    print(f"Maximum score for breast cancer dataset : ", KNN_score[highest_KNN], "at K =", highest_KNN)
+    print(f"Training accuracy for breast cancer dataset: ", test_score * 100, '%')
+
+    # Convert class labels from integer to string format
+    y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
+    y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_pred]
+
+    # Evaluate the performance of the classifier
+    print("Accuracy:", accuracy_score(y_true_str, y_pred_str))
+
     if (show_graphs):
         plt.figure(figsize=(10, 6))
         x = [2,3,4,5,6,7,8,9]
@@ -277,18 +290,10 @@ def KNN(X_train, X_test, y_train, y_test):
         plt.title(f'Score vs. number of neighbours for breast cancer dataset')
         plt.xlabel('K')
         plt.ylabel('Score')
-        print(f"Maximum score for breast cancer dataset : ",  KNN_score[highest_KNN], "at K =", highest_KNN)
-        print(f"Training accuracy for breast cancer dataset: ", test_score * 100, '%')
+
         plt.show()
 
-        y_pred = KNN.predict(X_test)
 
-        # Convert class labels from integer to string format
-        y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
-        y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_pred]
-
-        # Evaluate the performance of the classifier
-        print("Accuracy:", accuracy_score(y_true_str, y_pred_str))
 
         # Generate a confusion matrix plot
         cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
@@ -304,18 +309,18 @@ def KNN(X_train, X_test, y_train, y_test):
         plt.tight_layout()
         plt.show()
 
-    #SCATTER PLOT
-    pca = PCA(n_components=1)
+        #SCATTER PLOT
+        pca = PCA(n_components=1)
 
-    X_train_plt = pca.fit_transform(X_train)
-    X_test_plt = pca.fit_transform(X_test)
-    knn_plt = KNeighborsClassifier(n_neighbors=2).fit(X_train_plt,y_train)
-    y_pred_plot = knn_plt.predict(X_test_plt)
+        X_train_plt = pca.fit_transform(X_train)
+        X_test_plt = pca.fit_transform(X_test)
+        knn_plt = KNeighborsClassifier(n_neighbors=2).fit(X_train_plt,y_train)
+        y_pred_plot = knn_plt.predict(X_test_plt)
 
-    # Generate a scatter plot graph for
-    plt.scatter(X_test_plt[y_pred_plot == 0], y_pred_plot[y_pred_plot == 0], s=3, c='r')
-    plt.scatter(X_test_plt[y_pred_plot == 1], y_pred_plot[y_pred_plot == 1], s=3, c='b')
-    plt.show()
+        # Generate a scatter plot graph for
+        plt.scatter(X_test_plt[y_pred_plot == 0], y_pred_plot[y_pred_plot == 0], s=3, c='r')
+        plt.scatter(X_test_plt[y_pred_plot == 1], y_pred_plot[y_pred_plot == 1], s=3, c='b')
+        plt.show()
 
 #           Decision Trees
 def decision_tree(X_train, X_test, y_train, y_test):
@@ -532,22 +537,13 @@ def naive_bayes(X_train, X_test, y_train, y_test):
 
         # Generate an ROC curve plot
         y_score = model.predict_proba(X_test)[:, 1]
-        fpr, tpr, _ = roc_curve(y_test, y_score, pos_label=1)
+        fpr, tpr, _ = roc_curve(y_test, y_pred, pos_label=1)
         fig, ax = plt.subplots(figsize=(5, 4))
         ax.plot(fpr, tpr, color='darkorange')
         ax.plot([0, 1], [0, 1], color='navy', linestyle='--')
         plt.xlabel('False Positive Rate', fontsize=12)
         plt.ylabel('True Positive Rate', fontsize=12)
         plt.title('ROC Curve', fontsize=14)
-        plt.show()
-
-        # Generate a Precision-Recall Curve plot
-        precision, recall, _ = precision_recall_curve(y_test, y_score, pos_label=1)
-        fig, ax = plt.subplots(figsize=(5, 4))
-        ax.plot(recall, precision, color='darkorange')
-        plt.xlabel('Recall', fontsize=12)
-        plt.ylabel('Precision', fontsize=12)
-        plt.title('Precision-Recall Curve', fontsize=14)
         plt.show()
 
         # Generate a Class Distribution Plot
@@ -571,12 +567,30 @@ def naive_bayes(X_train, X_test, y_train, y_test):
             plt.title('Feature Importance', fontsize=14)
             plt.show()
 
+        # Compute the calibration curve
+        # Predict probabilities for the test data
+        y_prob = model.predict_proba(X_test)[:, 1]
+        empirical_probs, predicted_probs = calibration_curve(y_test, y_prob, n_bins=10)
+
+        # Plot the calibration curve
+        plt.plot(predicted_probs, empirical_probs, 's-', label='%s' % 'Gaussian Naive Bayes')
+
+        # Add diagonal line representing perfect calibration
+        plt.plot([0, 1], [0, 1], '--', color='gray', label='Perfectly calibrated')
+
+        # Customize the plot
+        plt.xlabel('Predicted Probability')
+        plt.ylabel('Empirical Probability')
+        plt.title('Calibration Curve')
+        plt.legend(loc='lower right')
+        plt.show()
+
 #           Logistic Regression (NEW)
 def logistic_regression(X_train, X_test, y_train, y_test):
     print("#---------------------------------------------Logistic_regression----------------------------------------------")
 
     # Create a logistic regression classifier
-    model = LogisticRegression(random_state=0)
+    model = LogisticRegression(random_state=0,max_iter=10000)
 
     # Train the classifier on the training data
     model.fit(X_train, y_train)
@@ -606,7 +620,7 @@ def logistic_regression(X_train, X_test, y_train, y_test):
 
         # Generate an ROC curve plot
         y_prob = model.predict_proba(X_test)[:, 1]
-        fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+        fpr, tpr, thresholds = roc_curve(y_test, y_pred)
         roc_auc = auc(fpr, tpr)
 
         # Generate a feature importance plot (for models with coefficients available)
