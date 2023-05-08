@@ -14,6 +14,13 @@ from sklearn.calibration import CalibratedClassifierCV, calibration_curve
 from sklearn.metrics import brier_score_loss
 
 show_graphs = False
+# Read in the CSV file
+df = pd.read_csv('breast-cancer.csv')
+
+# Get the column names (labels)
+labels = list(df.columns)
+labels.pop(0)
+labels.pop(0)
 
 #---------------------------------------------Clustering----------------------------------------------
 
@@ -416,7 +423,16 @@ def LinearReg(X_train, X_test, y_train, y_test):
         # Generate a feature importance plot (for models with coefficients available)
         if hasattr(regr, 'coef_'):
             coefs = regr.coef_.ravel()
-            names = range(1, len(coefs) + 1)
+            if len(coefs) == 5:
+                names = ['symmetry_se', 'smoothness_mean', 'texture_se', 'symmetry_worst', 'compactness_se']
+            else:
+                names = labels
+            fig3, ax3 = plt.subplots(figsize=(7, 5))
+            ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
+            ax3.set_yticks(names)
+            ax3.set_xlabel('Coefficient', fontsize=12)
+            ax3.set_ylabel('Feature', fontsize=12)
+            ax3.set_title('Feature Importance', fontsize=14)
             fig, ax = plt.subplots(figsize=(7, 5))
             ax.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
             ax.set_yticks(names)
@@ -470,13 +486,22 @@ def support_vector_machines(X_train, X_test, y_train, y_test):
 
         # Generate an ROC curve plot
         y_prob = model.predict_proba(X_test)[:, 1]
-        fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+        fpr, tpr, thresholds = roc_curve(y_test, y_pred)
         roc_auc = auc(fpr, tpr)
 
         # Generate a feature importance plot (for models with coefficients available)
         if hasattr(model, 'coef_'):
             coefs = model.coef_.ravel()
-            names = range(1, len(coefs) + 1)
+            if len(coefs) == 5:
+                names = ['symmetry_se', 'smoothness_mean', 'texture_se', 'symmetry_worst', 'compactness_se']
+            else:
+                names = labels
+            fig3, ax3 = plt.subplots(figsize=(7, 5))
+            ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
+            ax3.set_yticks(names)
+            ax3.set_xlabel('Coefficient', fontsize=12)
+            ax3.set_ylabel('Feature', fontsize=12)
+            ax3.set_title('Feature Importance', fontsize=14)
             fig3, ax3 = plt.subplots(figsize=(7, 5))
             ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
             ax3.set_yticks(names)
@@ -626,7 +651,10 @@ def logistic_regression(X_train, X_test, y_train, y_test):
         # Generate a feature importance plot (for models with coefficients available)
         if hasattr(model, 'coef_'):
             coefs = model.coef_.ravel()
-            names = range(1, len(coefs) + 1)
+            if len(coefs) == 5:
+                names = ['symmetry_se', 'smoothness_mean', 'texture_se', 'symmetry_worst', 'compactness_se']
+            else:
+                names = labels
             fig3, ax3 = plt.subplots(figsize=(7, 5))
             ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
             ax3.set_yticks(names)
