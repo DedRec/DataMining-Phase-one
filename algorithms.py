@@ -10,10 +10,15 @@ from sklearn.tree import plot_tree, DecisionTreeClassifier
 from sklearn import svm
 from Project import *
 import numpy as np
+
+show_graphs = False
+
 #---------------------------------------------Clustering----------------------------------------------
 
 #           kmeans - kmediod
 def kmeans(X_train, X_test, y_train, y_test, n_clusters=2):
+    print("#---------------------------------------------kmeans----------------------------------------------")
+
     # Create a kmeans clustering model and fit on the training data
     kmeans = KMeans(n_clusters=n_clusters).fit(X_train)
 
@@ -50,36 +55,39 @@ def kmeans(X_train, X_test, y_train, y_test, n_clusters=2):
     kmeans_plt = KMeans(n_clusters=n_clusters).fit(X_train_plt)
 
     # Generate a scatter plot graph for 2 clusters and their centers
-    plt.scatter(X_train_plt[:, 0][kmeans_plt.labels_ == 0], X_train_plt[:, 1][kmeans_plt.labels_ == 0], s=3, c='r')
-    plt.scatter(X_train_plt[:, 0][kmeans_plt.labels_ == 1], X_train_plt[:, 1][kmeans_plt.labels_ == 1], s=3, c='b')
-    plt.plot(kmeans_plt.cluster_centers_[0][0], kmeans_plt.cluster_centers_[0][1], marker="x", markersize=10, markeredgecolor="black")
-    plt.plot(kmeans_plt.cluster_centers_[1][0], kmeans_plt.cluster_centers_[1][1], marker="x", markersize=10, markeredgecolor="black")
+    if(show_graphs):
+        plt.scatter(X_train_plt[:, 0][kmeans_plt.labels_ == 0], X_train_plt[:, 1][kmeans_plt.labels_ == 0], s=3, c='r')
+        plt.scatter(X_train_plt[:, 0][kmeans_plt.labels_ == 1], X_train_plt[:, 1][kmeans_plt.labels_ == 1], s=3, c='b')
+        plt.plot(kmeans_plt.cluster_centers_[0][0], kmeans_plt.cluster_centers_[0][1], marker="x", markersize=10, markeredgecolor="black")
+        plt.plot(kmeans_plt.cluster_centers_[1][0], kmeans_plt.cluster_centers_[1][1], marker="x", markersize=10, markeredgecolor="black")
 
-    plt.show()
+        plt.show()
 
-    # Convert class labels from integer to string format
-    y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
-    if accuracy_score(y_test, y_predict_test) > accuracy_score(y_test, y_predict_test_flipped):
-        y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test]
-    else:
-        y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test_flipped]
+        # Convert class labels from integer to string format
+        y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
+        if accuracy_score(y_test, y_predict_test) > accuracy_score(y_test, y_predict_test_flipped):
+            y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test]
+        else:
+            y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test_flipped]
 
-    # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
-    plt.tight_layout()
-    plt.show()
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
+        plt.tight_layout()
+        plt.show()
 
 #           DBscan
 def DBscan(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------DBscan----------------------------------------------")
+
     acc = []
     for i in range(1, 10):
         # Create a dbscan clustering model and fit on the training data with different maximum distance
@@ -132,18 +140,19 @@ def DBscan(X_train, X_test, y_train, y_test):
         y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test_flipped]
 
     # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
-    plt.tight_layout()
-    plt.show()
+    if (show_graphs):
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
+        plt.tight_layout()
+        plt.show()
 
 #           Hierarchical clustering
 def plot_dendrogram(model, **kwargs):
@@ -170,6 +179,8 @@ def plot_dendrogram(model, **kwargs):
 
 
 def agglomerative_clustering(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------agglomerative_clustering----------------------------------------------")
+
     # Create agglomerative clustering model and fit on the training data
     Agglomerative = AgglomerativeClustering().fit(X_train)
 
@@ -204,38 +215,41 @@ def agglomerative_clustering(X_train, X_test, y_train, y_test):
     print("Training Accuracy: ", "{:.4f}".format(train_acc*100), "%")
     print("Testing Accuracy: ", "{:.4f}".format(test_acc*100), "%")
 
-    plt.title("Hierarchical Clustering Dendrogram")
-    # plot the top three levels of the dendrogram
-    plot_dendrogram(Agglomerative_plt, truncate_mode="level", p=3)
-    plt.xlabel("Number of points in node (or index of point if no parenthesis).")
-    plt.show()
+    if (show_graphs):
+        plt.title("Hierarchical Clustering Dendrogram")
+        # plot the top three levels of the dendrogram
+        plot_dendrogram(Agglomerative_plt, truncate_mode="level", p=3)
+        plt.xlabel("Number of points in node (or index of point if no parenthesis).")
+        plt.show()
 
-    # Convert class labels from integer to string format
-    y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
-    if accuracy_score(y_test, y_predict_test) > accuracy_score(y_test, y_predict_test_flipped):
-        y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test]
-    else:
-        y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test_flipped]
+        # Convert class labels from integer to string format
+        y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
+        if accuracy_score(y_test, y_predict_test) > accuracy_score(y_test, y_predict_test_flipped):
+            y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test]
+        else:
+            y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_predict_test_flipped]
 
-    # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
-    plt.tight_layout()
-    plt.show()
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
+        plt.tight_layout()
+        plt.show()
 
 
 #-------------------------------------------Classification---------------------------------------------
 
 #           k-Nearest Neighbors (KNN)
 def KNN(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------KNN----------------------------------------------")
+
     #an empty list to store outputs of trying different k's on data
     KNN_score = []
 
@@ -252,42 +266,43 @@ def KNN(X_train, X_test, y_train, y_test):
     KNN.fit(X_train, y_train)
     test_score = KNN.score(X_test, y_test)
 
-    plt.figure(figsize=(10, 6))
-    x = [2,3,4,5,6,7,8,9]
+    if (show_graphs):
+        plt.figure(figsize=(10, 6))
+        x = [2,3,4,5,6,7,8,9]
 
-    #print(KNN.classes_)
-    #plotting different values of K and the resulted accuracy
-    plt.plot(x, KNN_score, color='blue', linestyle='dashed', marker='o',
-             markerfacecolor='red', markersize=10)
-    plt.title(f'Score vs. number of neighbours for breast cancer dataset')
-    plt.xlabel('K')
-    plt.ylabel('Score')
-    print(f"Maximum score for breast cancer dataset : ",  KNN_score[highest_KNN], "at K =", highest_KNN)
-    print(f"Training accuracy for breast cancer dataset: ", test_score * 100, '%')
-    plt.show()
+        #print(KNN.classes_)
+        #plotting different values of K and the resulted accuracy
+        plt.plot(x, KNN_score, color='blue', linestyle='dashed', marker='o',
+                 markerfacecolor='red', markersize=10)
+        plt.title(f'Score vs. number of neighbours for breast cancer dataset')
+        plt.xlabel('K')
+        plt.ylabel('Score')
+        print(f"Maximum score for breast cancer dataset : ",  KNN_score[highest_KNN], "at K =", highest_KNN)
+        print(f"Training accuracy for breast cancer dataset: ", test_score * 100, '%')
+        plt.show()
 
-    y_pred = KNN.predict(X_test)
+        y_pred = KNN.predict(X_test)
 
-    # Convert class labels from integer to string format
-    y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
-    y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_pred]
+        # Convert class labels from integer to string format
+        y_true_str = ["Benign" if label == 0 else "Malignant" for label in y_test]
+        y_pred_str = ["Benign" if label == 0 else "Malignant" for label in y_pred]
 
-    # Evaluate the performance of the classifier
-    print("Accuracy:", accuracy_score(y_true_str, y_pred_str))
+        # Evaluate the performance of the classifier
+        print("Accuracy:", accuracy_score(y_true_str, y_pred_str))
 
-    # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
-    plt.tight_layout()
-    plt.show()
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
+        plt.tight_layout()
+        plt.show()
 
     #SCATTER PLOT
     pca = PCA(n_components=1)
@@ -304,19 +319,48 @@ def KNN(X_train, X_test, y_train, y_test):
 
 #           Decision Trees
 def decision_tree(X_train, X_test, y_train, y_test):
-    clf = DecisionTreeClassifier(random_state=0)
+    print("#---------------------------------------------Decision_tree----------------------------------------------")
+
+
+    model = DecisionTreeClassifier(random_state=0)
 
     # Train the classifier on the training data
-    clf.fit(X_train, y_train)
+    model.fit(X_train, y_train)
 
     # Test the classifier on the test data
-    y_pred = clf.predict(X_test)
+    y_pred = model.predict(X_test)
 
     # Evaluate the performance of the classifier
     print("Accuracy:", accuracy_score(y_test, y_pred))
 
+    if (show_graphs):
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_test, y_pred)
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig1, ax1 = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 10}, linewidths=.5, linecolor='lightgray')
+        cbar = ax1.figure.colorbar(ax1.collections[0])
+        cbar.ax.tick_params(labelsize=10)
+        plt.title('Confusion Matrix', fontsize=12)
+        plt.xlabel('Predicted label', fontsize=10)
+        plt.ylabel('True label', fontsize=10)
+
+        # Generate a tree diagram plot
+        fig2, ax2 = plt.subplots(figsize=(16, 8))
+        if isinstance(X_train, pd.DataFrame):
+            feature_names = X_train.columns
+        else:
+            feature_names = [f'feature_{i}' for i in range(X_train.shape[1])]
+        plot_tree(model, filled=True, feature_names=feature_names, class_names=["Benign", "Malignant"], fontsize=6,
+                  ax=ax2)
+        plt.title('Decision Tree', fontsize=12)
+        plt.show()
+
 #           Linear Regression (not the best for our data so we need to point that)
 def LinearReg(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------Linear_regression----------------------------------------------")
+
     regr = LinearRegression()
     regr.fit(X_train, y_train)
     #print(X_train.shape)
@@ -349,43 +393,46 @@ def LinearReg(X_train, X_test, y_train, y_test):
     # Evaluate the performance of the classifier
     print("Accuracy:", accuracy_score(y_true_str, y_pred_str)*100)
 
-    # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
-    plt.tight_layout()
-    plt.show()
-
-    # Generate a feature importance plot (for models with coefficients available)
-    if hasattr(regr, 'coef_'):
-        coefs = regr.coef_.ravel()
-        names = range(1, len(coefs) + 1)
-        fig, ax = plt.subplots(figsize=(7, 5))
-        ax.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
-        ax.set_yticks(names)
-        ax.set_xlabel('Coefficient', fontsize=12)
-        ax.set_ylabel('Feature', fontsize=12)
-        ax.set_title('Feature Importance', fontsize=14)
+    if (show_graphs):
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
+        plt.tight_layout()
         plt.show()
+
+        # Generate a feature importance plot (for models with coefficients available)
+        if hasattr(regr, 'coef_'):
+            coefs = regr.coef_.ravel()
+            names = range(1, len(coefs) + 1)
+            fig, ax = plt.subplots(figsize=(7, 5))
+            ax.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
+            ax.set_yticks(names)
+            ax.set_xlabel('Coefficient', fontsize=12)
+            ax.set_ylabel('Feature', fontsize=12)
+            ax.set_title('Feature Importance', fontsize=14)
+            plt.show()
 
 #           Random Forests (NEW)
 def RandomForest(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------Random_forest----------------------------------------------")
+
     rf = RandomForestClassifier()
     rf.fit(X_train, y_train)
     y_pred = rf.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     print("Accuracy:", accuracy)
 
-
 #           Support Vector Machines (SVM)
 def support_vector_machines(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------SVM----------------------------------------------")
 
     # Create a support vector machine classifier
     model = svm.SVC(kernel='linear', probability=True, random_state=0)
@@ -403,53 +450,55 @@ def support_vector_machines(X_train, X_test, y_train, y_test):
     # Evaluate the performance of the classifier
     print("Accuracy:", accuracy_score(y_true_str, y_pred_str))
 
-    # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
+    if (show_graphs):
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
 
-    # Generate an ROC curve plot
-    y_prob = model.predict_proba(X_test)[:, 1]
-    fpr, tpr, thresholds = roc_curve(y_test, y_prob)
-    roc_auc = auc(fpr, tpr)
+        # Generate an ROC curve plot
+        y_prob = model.predict_proba(X_test)[:, 1]
+        fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+        roc_auc = auc(fpr, tpr)
 
-    # Generate a feature importance plot (for models with coefficients available)
-    if hasattr(model, 'coef_'):
-        coefs = model.coef_.ravel()
-        names = range(1, len(coefs) + 1)
-        fig3, ax3 = plt.subplots(figsize=(7, 5))
-        ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
-        ax3.set_yticks(names)
-        ax3.set_xlabel('Coefficient', fontsize=12)
-        ax3.set_ylabel('Feature', fontsize=12)
-        ax3.set_title('Feature Importance', fontsize=14)
+        # Generate a feature importance plot (for models with coefficients available)
+        if hasattr(model, 'coef_'):
+            coefs = model.coef_.ravel()
+            names = range(1, len(coefs) + 1)
+            fig3, ax3 = plt.subplots(figsize=(7, 5))
+            ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
+            ax3.set_yticks(names)
+            ax3.set_xlabel('Coefficient', fontsize=12)
+            ax3.set_ylabel('Feature', fontsize=12)
+            ax3.set_title('Feature Importance', fontsize=14)
 
-    # Show all plots
-    fig2, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray', ax=ax1)
-    ax1.set_title('Confusion Matrix', fontsize=14)
-    ax1.set_xlabel('Predicted label', fontsize=12)
-    ax1.set_ylabel('True label', fontsize=12)
-    ax2.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
-    ax2.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    ax2.set_xlim([0.0, 1.0])
-    ax2.set_ylim([0.0, 1.05])
-    ax2.set_xlabel('False Positive Rate')
-    ax2.set_ylabel('True Positive Rate')
-    ax2.set_title('Receiver Operating Characteristic (ROC) Curve')
-    ax2.legend(loc="lower right")
-    plt.show()
+        # Show all plots
+        fig2, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray', ax=ax1)
+        ax1.set_title('Confusion Matrix', fontsize=14)
+        ax1.set_xlabel('Predicted label', fontsize=12)
+        ax1.set_ylabel('True label', fontsize=12)
+        ax2.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+        ax2.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        ax2.set_xlim([0.0, 1.0])
+        ax2.set_ylim([0.0, 1.05])
+        ax2.set_xlabel('False Positive Rate')
+        ax2.set_ylabel('True Positive Rate')
+        ax2.set_title('Receiver Operating Characteristic (ROC) Curve')
+        ax2.legend(loc="lower right")
+        plt.show()
 
 #           Naive Bayes
 def naive_bayes(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------Naive_Bayes----------------------------------------------")
 
     # Create a Gaussian Naive Bayes classifier
     model = GaussianNB()
@@ -467,62 +516,64 @@ def naive_bayes(X_train, X_test, y_train, y_test):
     # Evaluate the performance of the classifier
     print("Accuracy:", accuracy_score(y_true_str, y_pred_str))
 
-    # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
-    plt.show()
-
-    # Generate an ROC curve plot
-    y_score = model.predict_proba(X_test)[:, 1]
-    fpr, tpr, _ = roc_curve(y_test, y_score, pos_label=1)
-    fig, ax = plt.subplots(figsize=(5, 4))
-    ax.plot(fpr, tpr, color='darkorange')
-    ax.plot([0, 1], [0, 1], color='navy', linestyle='--')
-    plt.xlabel('False Positive Rate', fontsize=12)
-    plt.ylabel('True Positive Rate', fontsize=12)
-    plt.title('ROC Curve', fontsize=14)
-    plt.show()
-
-    # Generate a Precision-Recall Curve plot
-    precision, recall, _ = precision_recall_curve(y_test, y_score, pos_label=1)
-    fig, ax = plt.subplots(figsize=(5, 4))
-    ax.plot(recall, precision, color='darkorange')
-    plt.xlabel('Recall', fontsize=12)
-    plt.ylabel('Precision', fontsize=12)
-    plt.title('Precision-Recall Curve', fontsize=14)
-    plt.show()
-
-    # Generate a Class Distribution Plot
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.countplot(x=y_test, data=pd.DataFrame({'class': y_test}))
-    plt.xlabel('Class Label', fontsize=12)
-    plt.ylabel('Number of Samples', fontsize=12)
-    plt.title('Class Distribution', fontsize=14)
-    plt.show()
-
-    # Generate a Feature Importance Plot
-    if hasattr(model, 'feature_importances_'):
-        feature_importances = model.feature_importances_
-        feature_names = X_train.columns.values
-        features_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importances})
-        features_df = features_df.sort_values(by='Importance', ascending=False)
+    if (show_graphs):
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
         fig, ax = plt.subplots(figsize=(5, 4))
-        sns.barplot(x='Importance', y='Feature', data=features_df)
-        plt.xlabel('Feature Importance', fontsize=12)
-        plt.ylabel('Feature Name', fontsize=12)
-        plt.title('Feature Importance', fontsize=14)
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
         plt.show()
+
+        # Generate an ROC curve plot
+        y_score = model.predict_proba(X_test)[:, 1]
+        fpr, tpr, _ = roc_curve(y_test, y_score, pos_label=1)
+        fig, ax = plt.subplots(figsize=(5, 4))
+        ax.plot(fpr, tpr, color='darkorange')
+        ax.plot([0, 1], [0, 1], color='navy', linestyle='--')
+        plt.xlabel('False Positive Rate', fontsize=12)
+        plt.ylabel('True Positive Rate', fontsize=12)
+        plt.title('ROC Curve', fontsize=14)
+        plt.show()
+
+        # Generate a Precision-Recall Curve plot
+        precision, recall, _ = precision_recall_curve(y_test, y_score, pos_label=1)
+        fig, ax = plt.subplots(figsize=(5, 4))
+        ax.plot(recall, precision, color='darkorange')
+        plt.xlabel('Recall', fontsize=12)
+        plt.ylabel('Precision', fontsize=12)
+        plt.title('Precision-Recall Curve', fontsize=14)
+        plt.show()
+
+        # Generate a Class Distribution Plot
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.countplot(x=y_test, data=pd.DataFrame({'class': y_test}))
+        plt.xlabel('Class Label', fontsize=12)
+        plt.ylabel('Number of Samples', fontsize=12)
+        plt.title('Class Distribution', fontsize=14)
+        plt.show()
+
+        # Generate a Feature Importance Plot
+        if hasattr(model, 'feature_importances_'):
+            feature_importances = model.feature_importances_
+            feature_names = X_train.columns.values
+            features_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importances})
+            features_df = features_df.sort_values(by='Importance', ascending=False)
+            fig, ax = plt.subplots(figsize=(5, 4))
+            sns.barplot(x='Importance', y='Feature', data=features_df)
+            plt.xlabel('Feature Importance', fontsize=12)
+            plt.ylabel('Feature Name', fontsize=12)
+            plt.title('Feature Importance', fontsize=14)
+            plt.show()
 
 #           Logistic Regression (NEW)
 def logistic_regression(X_train, X_test, y_train, y_test):
+    print("#---------------------------------------------Logistic_regression----------------------------------------------")
 
     # Create a logistic regression classifier
     model = LogisticRegression(random_state=0)
@@ -540,54 +591,48 @@ def logistic_regression(X_train, X_test, y_train, y_test):
     # Evaluate the performance of the classifier
     print("Accuracy:", accuracy_score(y_true_str, y_pred_str))
 
-    # Generate a confusion matrix plot
-    cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
-    cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
-    fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
-    cbar = ax.figure.colorbar(ax.collections[0])
-    cbar.ax.tick_params(labelsize=12)
-    plt.title('Confusion Matrix', fontsize=14)
-    plt.xlabel('Predicted label', fontsize=12)
-    plt.ylabel('True label', fontsize=12)
+    if (show_graphs):
+        # Generate a confusion matrix plot
+        cm = confusion_matrix(y_true_str, y_pred_str, labels=["Benign", "Malignant"])
+        cm_labels = {"Benign": "Benign", "Malignant": "Malignant"}
+        fig, ax = plt.subplots(figsize=(5, 4))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray')
+        cbar = ax.figure.colorbar(ax.collections[0])
+        cbar.ax.tick_params(labelsize=12)
+        plt.title('Confusion Matrix', fontsize=14)
+        plt.xlabel('Predicted label', fontsize=12)
+        plt.ylabel('True label', fontsize=12)
 
-    # Generate an ROC curve plot
-    y_prob = model.predict_proba(X_test)[:, 1]
-    fpr, tpr, thresholds = roc_curve(y_test, y_prob)
-    roc_auc = auc(fpr, tpr)
+        # Generate an ROC curve plot
+        y_prob = model.predict_proba(X_test)[:, 1]
+        fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+        roc_auc = auc(fpr, tpr)
 
-    # Generate a feature importance plot (for models with coefficients available)
-    if hasattr(model, 'coef_'):
-        coefs = model.coef_.ravel()
-        names = range(1, len(coefs) + 1)
-        fig3, ax3 = plt.subplots(figsize=(7, 5))
-        ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
-        ax3.set_yticks(names)
-        ax3.set_xlabel('Coefficient', fontsize=12)
-        ax3.set_ylabel('Feature', fontsize=12)
-        ax3.set_title('Feature Importance', fontsize=14)
+        # Generate a feature importance plot (for models with coefficients available)
+        if hasattr(model, 'coef_'):
+            coefs = model.coef_.ravel()
+            names = range(1, len(coefs) + 1)
+            fig3, ax3 = plt.subplots(figsize=(7, 5))
+            ax3.barh(names, coefs, height=0.7, color=plt.cm.RdBu(np.sign(coefs)))
+            ax3.set_yticks(names)
+            ax3.set_xlabel('Coefficient', fontsize=12)
+            ax3.set_ylabel('Feature', fontsize=12)
+            ax3.set_title('Feature Importance', fontsize=14)
 
-    # Show all plots
-    fig2, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
-                cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray', ax=ax1)
-    ax1.set_title('Confusion Matrix', fontsize=14)
-    ax1.set_xlabel('Predicted label', fontsize=12)
-    ax1.set_ylabel('True label', fontsize=12)
-    ax2.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
-    ax2.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    ax2.set_xlim([0.0, 1.0])
-    ax2.set_ylim([0.0, 1.05])
-    ax2.set_xlabel('False Positive Rate')
-    ax2.set_ylabel('True Positive Rate')
-    ax2.set_title('Receiver Operating Characteristic (ROC) Curve')
-    ax2.legend(loc="lower right")
-    plt.show()
-
-
-
-
-
-
-
+        # Show all plots
+        fig2, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=cm_labels.values(), yticklabels=cm_labels.values(),
+                    cbar=False, annot_kws={"fontsize": 12}, linewidths=.5, linecolor='lightgray', ax=ax1)
+        ax1.set_title('Confusion Matrix', fontsize=14)
+        ax1.set_xlabel('Predicted label', fontsize=12)
+        ax1.set_ylabel('True label', fontsize=12)
+        ax2.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+        ax2.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        ax2.set_xlim([0.0, 1.0])
+        ax2.set_ylim([0.0, 1.05])
+        ax2.set_xlabel('False Positive Rate')
+        ax2.set_ylabel('True Positive Rate')
+        ax2.set_title('Receiver Operating Characteristic (ROC) Curve')
+        ax2.legend(loc="lower right")
+        plt.show()
