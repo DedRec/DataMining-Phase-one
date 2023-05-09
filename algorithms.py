@@ -765,4 +765,3 @@ def logistic_regression(X_train, X_test, y_train, y_test):
         ax2.legend(loc="lower right")
         plt.show()
 
-
